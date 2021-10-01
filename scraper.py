@@ -1,5 +1,5 @@
-# Name:
-# Student number:
+# Name: Seda den Boer
+# Student number: 12179981
 """
 Scrape top movies from www.imdb.com between start_year and end_year (e.g., 1930 and 2020)
 Continues scraping until at least a top 5 for each year can be created.
@@ -8,35 +8,92 @@ Saves results to a CSV file
 
 from helpers import simple_get
 from bs4 import BeautifulSoup
+import requests
 import re
 import pandas as pd
 from math import ceil
 import argparse
+import numpy as np
 
 IMDB_URL = 'https://www.imdb.com/search/title/?title_type=feature&release_date=1930-01-01,2020-01-01&num_votes=5000,&sort=user_rating,desc&start=1&view=advanced'
 
 def main(output_file_name, start_year, end_year):
+    """
+    Info
+    """
     # Load website with BeautifulSoup
-    html = simple_get(IMDB_URL)
-    dom = BeautifulSoup(html, 'html.parser')
+    pages = np.arange(1, 101, 50)
+    df_list = []
 
-    # Extract movies from website
-    movies_df = extract_movies(dom)
+    for page in pages:
+        page_url = "https://www.imdb.com/search/title/?title_type=feature&release_date=1930-01-01,2020-01-01&num_votes=5000,&sort=user_rating,desc&start=" + str(page) + "&view=advanced"
+
+        html = simple_get(page_url)
+        dom = BeautifulSoup(html, 'html.parser')
+
+        # Extract movies from website
+        movies_df = extract_movies(dom)
+        df_list.append(movies_df)
+
 
     # Save results to output file
-    movies_df.to_csv(output_file_name, index=False)
+    all_movies_df = pd.concat(df_list).sort_values(['year', 'rating'], ascending=False)
+    all_movies_df['year'] = np.clip(all_movies_df['year'], a_min = start_year, a_max = end_year)
+
+    print(all_movies_df)
+
+    print(all_movies_df['year'].value_counts())
+
+    all_movies_df.to_csv(output_file_name, index=False)
 
 def extract_movies(dom):
-    # Print title dom.
-    # (This is just an example for using BeautifulSoup. SHOULD BE REMOVED.)
-    main_html = dom.find("div", {"id": "main"})
-    header = dom.find("h1", {"class": "header"})
-    print(header.get_text())
+    """
+    Info
+    """
+    movies_list = []
+    movie_containers = dom.find_all('div', class_ = 'lister-item-content')
 
-    # Return some nonsense dataframe
-    # (This is just an example. SHOULD BE REPLACED.)
-    df = pd.DataFrame([["nonsense-value1", "nonsense-value2"]], columns = ["nonsense-column-name1", "nonsense-column-name2"])
-    return df
+    # titles = []
+    # ratings = []
+    # years = []
+    # actors = []
+    # runtimes = []
+    # urls = []
+
+    for movie in movie_containers:
+        title = movie.h3.a.string
+        rating = movie.find('div', class_ = 'inline-block ratings-imdb-rating')['data-value']
+        year_unstripped = movie.find('span', class_ = 'lister-item-year text-muted unbold').string
+        year = int(re.sub("[^0-9]", "", year_unstripped))
+        actor = ';'.join([a.string for a in movie.find('p', class_ = '').find_all('a')[1:]])
+        runtime = movie.find('span', class_ = 'runtime').string.strip('min')
+        url = ('https://www.imdb.com/' + movie.a['href'])
+
+        # titles.append(title)
+        # ratings.append(rating)
+        # years.append(year)
+        # actors.append(actor)
+        # runtimes.append(runtime)
+        # urls.append(url)
+
+        movie_data = [title, rating, year, actor, runtime, url]
+        movies_list.append(movie_data)
+
+    movies_df = pd.DataFrame(movies_list, columns = ['title', 'rating', 'year', 'actors', 'runtime', 'url']).fillna('Not available')
+    # movies_df = pd.DataFrame({'title': titles, 'rating': ratings, 'year': years, 'actors': actors, 'runtime': runtimes, 'url': urls})
+    # print(movies_df['year'].value_counts())
+    return movies_df
+
+
+# def all_movies(df):
+#     """
+#     info
+#     """
+#     pages = np.arrange(1, N, 50)
+
+#     for page in pages:
+#         page = requests.get("https://www.imdb.com/search/title/?title_type=feature&release_date=1930-01-01,2020-01-01&num_votes=5000,&sort=user_rating,desc&start=" + str(page) + "&view=advanced")
+
 
 if __name__ == "__main__":
     # Set-up parsing command line arguments

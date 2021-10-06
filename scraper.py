@@ -13,7 +13,6 @@ import pandas as pd
 import argparse
 import numpy as np
 
-IMDB_URL = 'https://www.imdb.com/search/title/?title_type=feature&release_date=1930-01-01,2020-01-01&num_votes=5000,&sort=user_rating,desc&start=1&view=advanced'
 
 def main(output_file_name, start_year, end_year):
     """
@@ -44,9 +43,13 @@ def main(output_file_name, start_year, end_year):
         # mask values that are not in the specified year interval range and put dataframes in a list
         movies_df = movies_df[np.logical_and(movies_df.year >= start_year, movies_df.year <= end_year)]
         df_list.append(movies_df)
+
+        # tracking counts of movies in every year and adding these up as we're looping
+        counts = movies_df['year'].value_counts().sort_index(ascending=False)
+        total_counts = total_counts.add(counts, fill_value=0).sort_index(ascending=False)
         
         # condition 1: movies from every year of the time interval
-        counted_years = threshold.size
+        counted_years = total_counts.size
         # condition 2: at least 5 movies for every year
         threshold = total_counts >= 5
 

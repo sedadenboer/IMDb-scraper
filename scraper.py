@@ -8,10 +8,8 @@ Saves results to a CSV file
 
 from helpers import simple_get
 from bs4 import BeautifulSoup
-import requests
 import re
 import pandas as pd
-from math import ceil
 import argparse
 import numpy as np
 
@@ -19,12 +17,13 @@ IMDB_URL = 'https://www.imdb.com/search/title/?title_type=feature&release_date=1
 
 def main(output_file_name, start_year, end_year):
     """
-    Info
+    Collects the top N rated movies, with at least 5 movies for every year on a specified year interal.
+    Does this by calling extract_movies(dom) in a loop until conditions are met. Eventually puts all data
+    in a dataframe and saves the result in movies.csv.
     """
 
     # calculate the amount of years specified in the time interval
     year_interval = end_year - start_year + 1
-    print(year_interval)
 
     # initialize
     df_list = []
@@ -44,40 +43,22 @@ def main(output_file_name, start_year, end_year):
 
         # mask values that are not in the specified year interval range and put dataframes in a list
         movies_df = movies_df[np.logical_and(movies_df.year >= start_year, movies_df.year <= end_year)]
-        print(movies_df)
         df_list.append(movies_df)
-
-        # tracking counts of movies in every year and adding these up as we're looping
-        counts = movies_df['year'].value_counts().sort_index(ascending=False)
-        total_counts = total_counts.add(counts, fill_value=0).sort_index(ascending=False)
         
         # condition 1: movies from every year of the time interval
-        counted_years = total_counts.size
+        counted_years = threshold.size
         # condition 2: at least 5 movies for every year
         threshold = total_counts >= 5
 
-        # print statements for testing
-        print(total_counts)
-        print(threshold)
-        print('counted_years', counted_years)
-
-        # number of years in db should be equal to specified year interval and .all() checks if threshold is True for all years
-
-        if threshold.all() and threshold.size == year_interval:
+        # .all() checks if threshold is True for all years and number of years in db should be equal to specified year interval
+        if threshold.all() and counted_years == year_interval:
             break
 
         # change pagenumber to retrieve movie data from multiple pages if necessary
         page += 50
-        print("NUMBER OF YEARS", year_interval, threshold.size)
-        print(page)
-
-    # print('year interval', year_interval)
-    # print('size', total_counts.size)
 
     # join all gathered dataframes from the loop into one big dataframe
     all_movies_df = pd.concat(df_list).sort_values(['year', 'rating'], ascending=False)
-
-    print(all_movies_df)
 
     # save results to output file
     all_movies_df.to_csv(output_file_name, index=False)
@@ -85,7 +66,8 @@ def main(output_file_name, start_year, end_year):
 
 def extract_movies(dom):
     """
-    Info
+    Extracts movie data from html parsed IMDb page. Each movie entry is a dictionary with specified movie data fields.
+    All movie dictionaries created will be put in a list and eventually be converted into a dataframe.
     """
     movies_list = []
     movie_containers = dom.find_all('div', class_ = 'lister-item-content')
@@ -98,6 +80,7 @@ def extract_movies(dom):
         year = int(re.sub("[^0-9]", "", year_unstripped))
         actor = ';'.join([a.string for a in movie.find('p', class_ = '').find_all('a')[1:]])
         runtime = movie.find('span', class_ = 'runtime')
+        # avoid None values while retrieving runtime
         if runtime:
             runtime = runtime.string.strip('min')
         else:

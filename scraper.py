@@ -60,17 +60,10 @@ def main(output_file_name, start_year, end_year):
         # change pagenumber to retrieve movie data from multiple pages if necessary
         page += 50
 
-        # print statements for testing
-        print(total_counts)
-        print(threshold)
-        print('counted_years', counted_years)
-        print("NUMBER OF YEARS", year_interval, threshold.size)
-
 
     # join all gathered dataframes from the loop into one big dataframe
     all_movies_df = pd.concat(df_list).sort_values(['year', 'rating'], ascending=False)
-    print(all_movies_df)
-
+    
     # save results to output file
     all_movies_df.to_csv(output_file_name, index=False)
 
@@ -85,25 +78,38 @@ def extract_movies(dom):
 
     # retrieve all wanted information from the IMDb website
     for movie in movie_containers:
+        # get title of movie
         title = movie.h3.a.string
-        rating = movie.find('div', class_ = 'inline-block ratings-imdb-rating')['data-value']
-        year_unstripped = movie.find('span', class_ = 'lister-item-year text-muted unbold').string
-        year = int(re.sub("[^0-9]", "", year_unstripped))
 
-        # avoid None values while retrieving actors
+        # retrieve rating and avoid None values
+        rating = movie.find('div', class_ = 'inline-block ratings-imdb-rating')
+        if rating:
+            rating = rating['data-value']
+        else:
+            rating = 'No rating found'
+        
+        # retrieve year and avoid None values
+        year_unstripped = movie.find('span', class_ = 'lister-item-year text-muted unbold')
+        if year_unstripped:
+            year = int(re.sub("[^0-9]", "", year_unstripped.string))
+        else:
+            'No year found'
+
+        # retrieve actors and avoid None values
         actor_search = movie.find('p', class_= '').find('span', class_='ghost')
         if actor_search:
             actor = ';'.join([actor.string for actor in actor_search.find_next_siblings('a')])
         else:
             actor = 'No actors found'
 
-        # avoid None values while retrieving runtime
+        # retrieve runtime and avoid None values
         runtime = movie.find('span', class_ = 'runtime')
         if runtime:
             runtime = runtime.string.strip('min')
         else:
             runtime = '-'
 
+        # movie url IMDb link
         url = ('https://www.imdb.com/' + movie.a['href'])
 
         # put movie information together in a dictionary

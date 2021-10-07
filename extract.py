@@ -12,7 +12,7 @@ def main(N, input, output):
     """
     Info
     """
-    df = pd.read_csv('data/movies.csv').sort_values(['year', 'rating', 'title'], ascending=(True, False, True))
+    df = pd.read_csv(input).sort_values(['year', 'rating', 'title'], ascending=(True, False, True))
     topn_df = df.groupby('year').head(N)
     topn_df.to_csv(output, index=False)
 

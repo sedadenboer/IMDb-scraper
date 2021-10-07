@@ -51,7 +51,7 @@ def main(output_file_name, start_year, end_year):
         # condition 1: movies from every year of the time interval
         counted_years = total_counts.size
         # condition 2: at least 5 movies for every year
-        threshold = total_counts >= 2
+        threshold = total_counts >= 5
 
         # .all() checks if threshold is True for all years and number of years in db should be equal to specified year interval
         if threshold.all() and counted_years == year_interval:
@@ -60,10 +60,17 @@ def main(output_file_name, start_year, end_year):
         # change pagenumber to retrieve movie data from multiple pages if necessary
         page += 50
 
+        # print statements for testing
+        print(total_counts)
+        print(threshold)
+        print('counted_years', counted_years)
+        print("NUMBER OF YEARS", year_interval, threshold.size)
+
 
     # join all gathered dataframes from the loop into one big dataframe
     all_movies_df = pd.concat(df_list).sort_values(['year', 'rating'], ascending=False)
-    
+    print(all_movies_df)
+
     # save results to output file
     all_movies_df.to_csv(output_file_name, index=False)
 

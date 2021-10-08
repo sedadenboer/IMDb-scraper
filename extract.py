@@ -1,16 +1,20 @@
+# extract.py
+#
+# Course: programmeerplatform
 # Name: Seda den Boer
 # Student number: 12179981
-"""
-
-"""
+#
+# This program creates a file top5.csv containing the top 5 movies of every year from 1930 to 2020.
+# - Has to be paired with movies.csv which is a file containing movie data from IMDb.
+# - Command line includes an optional -n to adjust the top N amount of movies, input file and output file.
 
 import pandas as pd
 import argparse
-import numpy as np
+
 
 def main(N, input, output):
     """
-    Info
+    Reads movies.csv and generates a subset containing the top N movies for every year.
     """
     df = pd.read_csv(input).sort_values(['year', 'rating', 'title'], ascending=(True, False, True))
     topn_df = df.groupby('year').head(N)

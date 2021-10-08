@@ -1,10 +1,12 @@
+# scraper.py
+#
+# Course: programmeerplatform
 # Name: Seda den Boer
 # Student number: 12179981
-"""
-Scrape top movies from www.imdb.com between start_year and end_year (e.g., 1930 and 2020)
-Continues scraping until at least a top 5 for each year can be created.
-Saves results to a CSV file
-"""
+#
+# Scrape top movies from www.imdb.com between start_year and end_year (e.g., 1930 and 2020).
+# - Continues scraping until at least a top 5 for each year can be created.
+# - Saves results to a CSV file.
 
 from helpers import simple_get
 from bs4 import BeautifulSoup

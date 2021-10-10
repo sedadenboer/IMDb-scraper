@@ -18,7 +18,7 @@ import argparse
 def main(input, plot):
     """
     Reads CSV datafile into a dataframe, calls average(df), calculates the maximum average rating 
-    and it's corresponding year, makes a barplot and saves it as a CSV file.
+    and it's corresponding year, makes a barplot and saves it as a PNG file.
     """
     # reading datafile
     df = pd.read_csv(input)

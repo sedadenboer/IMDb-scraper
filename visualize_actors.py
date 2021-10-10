@@ -7,7 +7,7 @@
 # This program visualizes the popularity of the top 50 actors of the top 5 IMDb movies from 1930-2020.
 # - Has to be paired with top5.csv which is a file containing top 5 movie data from IMDb .
 # - Command line includes the input file and output file.
-# - Contains function to calculate the number of appearances of the actors and returns it in a dicitoanry.
+# - Contains function to calculate the number of appearances of the actors and returns it in a dictionary.
 
 import matplotlib.pyplot as plt
 import pandas as pd

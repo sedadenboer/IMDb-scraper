@@ -6,7 +6,7 @@
 #
 # This program visualizes the popularity of the top 50 actors of the top 5 IMDb movies from 1930-2020.
 # - Has to be paired with top5.csv which is a file containing top 5 movie data from IMDb .
-# - Command line includes the input file and output file.
+# - Command line includes the input file name and plot file name (and storage map).
 # - Contains function to calculate the number of appearances of the actors and returns it in a dictionary.
 
 import matplotlib.pyplot as plt
@@ -29,7 +29,7 @@ def main(input, plot):
     appearances_50 = list(actor_frequencies.values())[:50]
 
     # plotting
-    plt.figure(figsize=(90,55))
+    plt.figure(figsize=(90, 55))
     plt.bar(actors_50, appearances_50, color='coral')
     plt.xlim(-1, 50)
     plt.xticks(np.arange(0, 50, 1), rotation=80, fontsize=30)
@@ -55,17 +55,17 @@ def top_actors(df):
             actor_dict[actor] = 1
 
     actor_dict = dict(sorted(actor_dict.items(), key=lambda item: item[1], reverse=True))
- 
+
     return actor_dict
 
 
 if __name__ == "__main__":
     # Set-up parsing command line arguments
-    parser = argparse.ArgumentParser(description = "plot top 50 actors with most appearances (1930-2020)")
+    parser = argparse.ArgumentParser(description="plot top 50 actors with most appearances (1930-2020)")
 
     # Adding arguments
-    parser.add_argument("input_file", help = "input file (csv)")
-    parser.add_argument("plot", help = "plot (png)")
+    parser.add_argument("input_file", help="input file (csv)")
+    parser.add_argument("plot", help="plot (png)")
 
     # Read arguments from command line
     args = parser.parse_args()

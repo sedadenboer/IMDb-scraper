@@ -2,6 +2,7 @@ from requests import get
 from requests.exceptions import RequestException
 from contextlib import closing
 
+
 def simple_get(url):
     """
     Attempts to get the content at `url` by making an HTTP GET request.

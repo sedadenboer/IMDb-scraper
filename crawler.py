@@ -6,8 +6,8 @@
 #
 # Scrapes language info from individual movie websites and creates a new top5 CSV file including this info.
 # - Command line includes the input file name and output file name.
-# - Contains get_languages(input) which retrieves and adds language info to the df.
-# - Saves result into a CSV file. 
+# - Contains get_languages(input) which retrieves and adds language info to a df.
+# - Saves result into a CSV file.
 
 from helpers import simple_get
 from bs4 import BeautifulSoup
@@ -32,18 +32,19 @@ def get_languages(input):
     df = pd.read_csv(input)
     urls = df['url']
     languages_list = []
-    
+
     for link in urls:
         # load and parse through the websites provided by the movie urls
         html = simple_get(link)
         dom = BeautifulSoup(html, 'html.parser')
 
         # create container with needed language information
-        language_containers = dom.find_all('li', {'class':'ipc-metadata-list__item', 'role': 'presentation', 'data-testid':'title-details-languages'})
+        language_containers = dom.find_all('li', {'class': 'ipc-metadata-list__item',
+                                                  'role': 'presentation', 'data-testid': 'title-details-languages'})
 
         # check if language container exist on website
         if language_containers:
-             # find all anchor tags
+            # find all anchor tags
             for item in language_containers:
                 first_search = item.find_all('a')
 
@@ -53,12 +54,12 @@ def get_languages(input):
                     languages = ';'.join([language.string for language in item.find_all('a')])
                     languages_list.append(languages)
                 else:
-                    # if searched anchor tag doesn't exist 
+                    # if searched anchor tag doesn't exist
                     languages_list.append('Not available')
         else:
             # if language container doesn't exist
             languages_list.append('Not available')
-    
+
     # add language list as column to df
     df['languages'] = languages_list
 
@@ -67,11 +68,11 @@ def get_languages(input):
 
 if __name__ == "__main__":
     # Set-up parsing command line arguments
-    parser = argparse.ArgumentParser(description = "generate top 5 movies with languages")
+    parser = argparse.ArgumentParser(description="generate top 5 movies with languages")
 
     # Adding arguments
-    parser.add_argument("input_file", help = "input file (csv)")
-    parser.add_argument("output_file", help = "output file (csv)")
+    parser.add_argument("input_file", help="input file (csv)")
+    parser.add_argument("output_file", help="output file (csv)")
 
     # Read arguments from command line
     args = parser.parse_args()

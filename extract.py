@@ -6,7 +6,7 @@
 #
 # This program creates a file top5.csv containing the top 5 movies of every year from 1930 to 2020.
 # - Has to be paired with movies.csv which is a file containing movie data from IMDb.
-# - Command line includes an optional -n to adjust the top N amount of movies, input file and output file.
+# - Command line includes an optional -n to adjust the top N amount of movies, input file name and output file name.
 
 import pandas as pd
 import argparse
@@ -20,14 +20,15 @@ def main(N, input, output):
     topn_df = df.groupby('year').head(N)
     topn_df.to_csv(output, index=False)
 
+
 if __name__ == "__main__":
     # Set-up parsing command line arguments
-    parser = argparse.ArgumentParser(description = "get top N movies from movies.csv")
+    parser = argparse.ArgumentParser(description="get top N movies from movies.csv")
 
     # Adding arguments
-    parser.add_argument("-n", "--top_n", type=int, default = 5, help="top N movies (default 5)")
-    parser.add_argument("input_file", help = "input file (csv)")
-    parser.add_argument("output_file", help = "output file (csv)")
+    parser.add_argument("-n", "--top_n", type=int, default=5, help="top N movies (default 5)")
+    parser.add_argument("input_file", help="input file (csv)")
+    parser.add_argument("output_file", help="output file (csv)")
 
     # Read arguments from command line
     args = parser.parse_args()

@@ -17,8 +17,9 @@ import argparse
 
 def main(input, plot):
     """
-    Reads CSV datafile into a dataframe, calls top50_actors(df), selects first 50 actors with most appearances
-    and the number of appearances, makes a barplot and saves it as a PNG file.
+    Reads CSV datafile into a dataframe, calls top50_actors(df),
+    selects first 50 actors with most appearances and the number
+    of appearances, makes a barplot and saves it as a PNG file.
     """
     # reading datafile
     df = pd.read_csv(input)
@@ -42,12 +43,14 @@ def main(input, plot):
 
 def top_actors(df):
     """
-    Creates a sorted dictionary with actor frequencies retrieved from the top 5 dataframe.
+    Creates a sorted dictionary with actor frequencies
+    retrieved from the top 5 dataframe.
     """
     actor_dict = {}
 
-    # select actors column from df, split actor string from semicolon and put individual actors in a list
+    # select actors column from df
     actors = df['actors'].values
+    # split actor string from semicolon and put individual actors in a list
     actors = [word for line in actors for word in line.split(';')]
 
     # count actor appearance rates and add them to dict

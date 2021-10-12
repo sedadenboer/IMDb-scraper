@@ -4,9 +4,9 @@
 # Name: Seda den Boer
 # Student number: 12179981
 #
-# Scrapes language info from individual movie websites and creates a new top5 CSV file including this info.
+# Scrapes language info from movie websites and creates a new top5 CSV.
 # - Command line includes the input file name and output file name.
-# - Contains get_languages(input) which retrieves and adds language info to a dataframe.
+# - Get_languages(input) retrieves and adds language info to a dataframe.
 # - Saves result into a CSV file.
 
 from helpers import simple_get
@@ -20,16 +20,18 @@ def main(input_file_name, output_file_name):
     Gets movies dataframe including languages and converts it to a new CSV.
     """
     df_with_languages = get_languages(input_file_name)
-    # df_with_languages.to_csv(output_file_name, index=False)
+    df_with_languages.to_csv(output_file_name, index=False)
 
 
 def get_languages(input):
     """
-    Takes a CSV file with movie data as input, converts it to df and uses movie urls
-    to retrieve info about language. Adds languages to new column in df.
+    Takes a CSV file with movie data as input,
+    converts it to df and uses movie urls to retrieve info about language.
+    Adds languages to new column in df.
     """
-    # create dataframe from CSV, get movie urls and initialize list for retrieved languages
+    # create dataframe from CSV
     df = pd.read_csv(input)
+    # get movie urls and initialize list for languages
     urls = df['url']
     languages_list = []
 

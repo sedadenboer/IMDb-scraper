@@ -20,9 +20,10 @@ import numpy as np
 
 def main(output_file_name, start_year, end_year):
     """
-    Collects the top N rated movies, with at least 5 movies for every year on a specified year interval.
-    Does this by calling extract_movies(dom) in a loop until conditions are met. Eventually puts all data
-    in a dataframe and saves the result in movies.csv.
+    Collects the top N rated movies, with at least 5 movies for every year
+    on a specified year interval. Does this by calling extract_movies(dom)
+    in a loop until conditions are met. Eventually puts all data in a
+    dataframe and saves the result in movies.csv.
     """
 
     # calculate the amount of years specified in the time interval
@@ -45,7 +46,7 @@ def main(output_file_name, start_year, end_year):
         # extract movies from website
         movies_df = extract_movies(dom).sort_values('year', ascending=False)
 
-        # mask values that are not in the specified year interval range and put dataframes in a list
+        # mask values that are not in the specified year interval and put dataframes in a list
         movies_df = movies_df[np.logical_and(movies_df.year >= start_year, movies_df.year <= end_year)]
         df_list.append(movies_df)
 
@@ -58,7 +59,7 @@ def main(output_file_name, start_year, end_year):
         # condition 2: at least 5 movies for every year
         threshold = total_counts >= 5
 
-        # .all() checks if threshold is True for all years and number of years in db should be equal to specified year interval
+        # check if threshold is True for all years and number of years in db should be equal to specified year interval
         if threshold.all() and counted_years == year_interval:
             break
 
@@ -74,8 +75,9 @@ def main(output_file_name, start_year, end_year):
 
 def extract_movies(dom):
     """
-    Extracts movie data from html parsed IMDb page. Each movie entry is a dictionary with specified movie data fields.
-    All movie dictionaries created will be put in a list and eventually be converted into a dataframe.
+    Extracts movie data from html parsed IMDb page. Each movie entry is a
+    dictionary with specified movie data fields. All movie dictionaries
+    created will be put in a list and eventually be converted into a dataframe.
     """
     movies_list = []
     movie_containers = dom.find_all('div', class_='lister-item-content')

@@ -5,7 +5,7 @@
 # Student number: 12179981
 #
 # This program visualizes language influences in the top 5 IMDb movies over the last 9 decades.
-# - Has to be paired with top5-with-languages.csv which is a file containing top 5 movie data from IMDb including language data.
+# - Has to be paired with top5-with-languages.csv containing top 5 movie data including languages.
 # - Command line includes the input file name and plot file name (and storage map).
 # - Functions: language_influence(df) returns dict with language counts over full df,
 #   language_count_decade(df, dict) returns dict with top 10 languages and counts for every decade.
@@ -17,8 +17,9 @@ import argparse
 
 def main(input, plot):
     """
-    Reads CSV datafile into a dataframe, calls language_influence(df) and language_count_decade(df, dict),
-    makes a line graph for every language from the top 10 languages and saves it as a PNG file.
+    Reads CSV datafile into a dataframe, calls language_influence(df)
+    and language_count_decade(df, dict), makes a line graph for every
+    language from the top 10 languages and saves it as a PNG file.
     """
 
     # reading datafile
@@ -26,7 +27,7 @@ def main(input, plot):
     dict = language_influence(df)
     occurence_rate = language_count_decade(df, dict)
 
-    # generate lists with keys and values from occurence_rate dictionary (will be used for making plot labels)
+    # generate lists with keys and values from occurence_rate dictionary (for plot labels)
     key_list = list(occurence_rate.keys())
     value_list = list(occurence_rate.values())
 
@@ -51,7 +52,8 @@ def main(input, plot):
 
 def language_count_decade(df, dict):
     """
-    Returns a dictionary with the top 10 languages as keys and a list with occurence rate counts per decade as value.
+    Returns a dictionary with the top 10 languages as keys
+    and a list with occurence rate counts per decade as value.
     """
     # select top 10 most popular languages
     languages_top10 = list(dict.keys())[:10]
@@ -63,8 +65,8 @@ def language_count_decade(df, dict):
 
     # initialize dictionary with language popularity rates
     top10_dict = {}
-    for l in languages_top10:
-        top10_dict[l] = []
+    for language in languages_top10:
+        top10_dict[language] = []
 
     # initialize strating year and ending year of first decade
     start_year = 1930
@@ -97,12 +99,14 @@ def language_count_decade(df, dict):
 
 def language_influence(df):
     """
-    Returns dictionary with all languages from the top 5 movie dataframe as keys and their occurrence rate as value.
+    Returns dictionary with all languages from the top 5
+    movie df as keys and their occurrence rate as value.
     """
     language_dict = {}
 
-    # select languages column from df, split language string from semicolon and put individual languages in a list
+    # select languages column from df
     languages = df['languages'].values
+    # split language string from semicolon and put individual languages in a list
     languages = [word for line in languages for word in line.split(';')]
 
     # count language occurrence rates and add them to dict

@@ -1,7 +1,7 @@
 
 # Scraping
 
-This project contains a few Python files from the data scraping assignment of the programming minor at UvA. In these files we're scraping the IMDb website with the top movies from 1930-2020. Eventually there will be different modifications and analyses of the data.
+This project contains a few Python files from the data scraping assignment from the programming minor at UvA. In these files we're scraping the IMDb website with the top movies from 1930-2020. Eventually there will be different modifications and analyses of the data.
 
 ## The files and their purpose
 - helpers.py: premade helper file from assignment

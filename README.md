@@ -5,7 +5,7 @@ This project contains a few Python files from the data scraping assignment from 
 
 ## The files and their purpose
 - helpers.py: premade helper file from assignment
-- scraper.py: scrapes at least 5 movies for every year between 1930-2020 from IMDb 
+- scraper.py: scrapes at least 5 high rated movies for every year between 1930-2020 from IMDb (https://www.imdb.com/search/title/?title_type=feature&release_date=1930-01-01,2021-01-01&num_votes=5000,&sort=user_rating,desc&start=1&view=advanced)
 - extract.py: extracts top 5 movies for every year
 - visualize_years.py: visualizes the average rating of top 5 IMDb movies for every year
 - visualize_actors.py: visualizes the popularity of the top 50 actors from the top 5 IMDb movies file

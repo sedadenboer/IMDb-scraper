@@ -34,11 +34,11 @@ def main(input, plot):
     decades = ['1930s', '1940s', '1950s', '1960s', '1970s', '1980s', '1990s', '2000s', '2010s']
 
     # plot a line graph for every language in the occurence_rate dictionary (top 10 languages)
-    for x in occurence_rate.values():
+    for data_list in occurence_rate.values():
         # retrieve and set graph labels by searching for matching key (with value)
-        labels = key_list[value_list.index(x)]
+        labels = key_list[value_list.index(data_list)]
         # plot graphs in one plot
-        plt.plot(decades, x, label=labels, linewidth=1)
+        plt.plot(decades, data_list, label=labels, linewidth=1)
 
     # plot characteristics and adjustments
     plt.ylim(-0.2, 50)
@@ -59,12 +59,12 @@ def language_count_decade(df, dict):
     # adjust dataframe by separating languages and exploding this column to get rows with individual languages
     df['languages'] = df['languages'].str.split(';')
     exploded_df = df.explode('languages')
-    final_df = exploded_df.loc[exploded_df['languages'].isin(languages_top10)]
+    adjusted_language_df = exploded_df.loc[exploded_df['languages'].isin(languages_top10)]
 
     # initialize dictionary with language popularity rates
-    dict_final = {}
+    top10_dict = {}
     for l in languages_top10:
-        dict_final[l] = []
+        top10_dict[l] = []
 
     # initialize strating year and ending year of first decade
     start_year = 1930
@@ -73,26 +73,26 @@ def language_count_decade(df, dict):
     # retrieve data until 2020
     while end_year <= 2020:
         # generate subdataframe for a decade
-        sub_df = final_df[(final_df.year >= start_year) & (final_df.year < end_year)].sort_values('languages')
+        sub_df = adjusted_language_df[(adjusted_language_df.year >= start_year) & (adjusted_language_df.year < end_year)].sort_values('languages')
         # count the occurrences of the most popular languages
         counts = sub_df['languages'].value_counts()
 
         # add counts for every language in a decade to dictionary
-        for l in languages_top10:
+        for language in languages_top10:
             # check for languages if they occur in a decade
-            if l in counts.index:
+            if language in counts.index:
                 # calculate the number of appearances and add to dictionary
-                count = counts.get(key=l)
-                dict_final[l].append(count)
+                count = counts.get(key=language)
+                top10_dict[language].append(count)
             else:
                 # if a language does not occur in a certain decade add 0 to dictionary
-                dict_final[l].append(0)
+                top10_dict[language].append(0)
 
         # keep adjusting the boundaries to look at the next decade
         start_year += 10
         end_year += 10
 
-    return dict_final
+    return top10_dict
 
 
 def language_influence(df):
@@ -121,15 +121,15 @@ def language_influence(df):
 
 
 if __name__ == "__main__":
-    # Set-up parsing command line arguments
+    # set-up parsing command line arguments
     parser = argparse.ArgumentParser(description="plot language influence of top rated movies from 1930-2020")
 
-    # Adding arguments
+    # adding arguments
     parser.add_argument("input_file", help="input file (csv)")
     parser.add_argument("plot", help="plot (png)")
 
-    # Read arguments from command line
+    # read arguments from command line
     args = parser.parse_args()
 
-    # Run main with provided arguments
+    # run main with provided arguments
     main(args.input_file, args.plot)

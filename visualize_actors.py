@@ -7,7 +7,7 @@
 # This program visualizes the popularity of the top 50 actors of the top 5 IMDb movies from 1930-2020.
 # - Has to be paired with top5.csv which is a file containing top 5 movie data from IMDb .
 # - Command line includes the input file name and plot file name (and storage map).
-# - Contains function to calculate the number of appearances of the actors and returns it in a dictionary.
+# - Contains function top_actors(df) to calculate the number of appearances of the actors and returns it in a dictionary.
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -45,30 +45,36 @@ def top_actors(df):
     Creates a sorted dictionary with actor frequencies retrieved from the top 5 dataframe.
     """
     actor_dict = {}
+
+    # select actors column from df, split actor string from semicolon and put individual actors in a list
     actors = df['actors'].values
     actors = [word for line in actors for word in line.split(';')]
 
+    # count actor appearance rates and add them to dict
     for actor in actors:
+        # if the actor is already in the dictionary
         if actor in actor_dict:
             actor_dict[actor] += 1
         else:
+            # if the actor is not yet in the dictionary
             actor_dict[actor] = 1
 
+    # sort dictionary based on appearcance rate from high to low
     actor_dict = dict(sorted(actor_dict.items(), key=lambda item: item[1], reverse=True))
 
     return actor_dict
 
 
 if __name__ == "__main__":
-    # Set-up parsing command line arguments
+    # set-up parsing command line arguments
     parser = argparse.ArgumentParser(description="plot top 50 actors with most appearances (1930-2020)")
 
-    # Adding arguments
+    # adding arguments
     parser.add_argument("input_file", help="input file (csv)")
     parser.add_argument("plot", help="plot (png)")
 
-    # Read arguments from command line
+    # read arguments from command line
     args = parser.parse_args()
 
-    # Run main with provided arguments
+    # run main with provided arguments
     main(args.input_file, args.plot)

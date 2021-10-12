@@ -6,6 +6,7 @@
 #
 # Scrape top movies from www.imdb.com between start_year and end_year (e.g., 1930 and 2020).
 # - Command line includes the optional start year and end year, and the output file name.
+# - Contains function extract_movies(dom) which scrapes a single IMDb webpage.
 # - Continues scraping until at least a top 5 for each year can be created.
 # - Saves results to a CSV file.
 
@@ -19,7 +20,7 @@ import numpy as np
 
 def main(output_file_name, start_year, end_year):
     """
-    Collects the top N rated movies, with at least 5 movies for every year on a specified year interal.
+    Collects the top N rated movies, with at least 5 movies for every year on a specified year interval.
     Does this by calling extract_movies(dom) in a loop until conditions are met. Eventually puts all data
     in a dataframe and saves the result in movies.csv.
     """
@@ -34,8 +35,8 @@ def main(output_file_name, start_year, end_year):
 
     while True:
         # changeable page url, based on what page we're looking at
-        page_url = f"https://www.imdb.com/search/title/?title_type=feature&release_date={start_year}-01-01,{end_year + 1}-01-01&num_votes=5000,&sort=user_rating,desc&start="
-        + str(page) + "&view=advanced"
+        page_url = f"https://www.imdb.com/search/title/?title_type=feature&release_date={start_year}-01-01,{end_year + 1}-01-01&num_votes=5000,&sort=user_rating,desc&start=" + str(
+                    page) + "&view=advanced"
 
         # load website with BeautifulSoup
         html = simple_get(page_url)
@@ -64,15 +65,8 @@ def main(output_file_name, start_year, end_year):
         # change pagenumber to retrieve movie data from multiple pages if necessary
         page += 50
 
-        # print statements for testing
-        print(total_counts)
-        print(threshold)
-        print('counted_years', counted_years)
-        print("NUMBER OF YEARS", year_interval, threshold.size)
-
     # join all gathered dataframes from the loop into one big dataframe
     all_movies_df = pd.concat(df_list).sort_values(['year', 'rating'], ascending=False)
-    print(all_movies_df)
 
     # save results to output file
     all_movies_df.to_csv(output_file_name, index=False)
@@ -135,16 +129,16 @@ def extract_movies(dom):
 
 
 if __name__ == "__main__":
-    # Set-up parsing command line arguments
+    # set-up parsing command line arguments
     parser = argparse.ArgumentParser(description="extract top N movies from IMDB")
 
-    # Adding arguments
+    # adding arguments
     parser.add_argument("output", help="output file (csv)")
     parser.add_argument("-s", "--start_year", type=int, default=1930, help="starting year (default: 1930)")
     parser.add_argument("-e", "--end_year",   type=int, default=2020, help="starting year (default: 2020)")
 
-    # Read arguments from command line
+    # read arguments from command line
     args = parser.parse_args()
 
-    # Run main with provide arguments
+    # run main with provide arguments
     main(args.output, args.start_year, args.end_year)

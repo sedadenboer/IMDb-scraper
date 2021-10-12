@@ -7,7 +7,7 @@
 # This program visualizes the average rating of the top 5 IMDb movies from 1930-2020.
 # - Has to be paired with top5.csv which is a file containing top 5 movie data from IMDb.
 # - Command line includes the input file name and plot file name (and storage map).
-# - Contains function to calculate the average rating based on year.
+# - Contains function average(df) to calculate the average rating based on year.
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -53,15 +53,15 @@ def average(df):
 
 
 if __name__ == "__main__":
-    # Set-up parsing command line arguments
+    # set-up parsing command line arguments
     parser = argparse.ArgumentParser(description="plot average movie rating of top 5 movies (1930-2020)")
 
-    # Adding arguments
+    # adding arguments
     parser.add_argument("input_file", help="input file (csv)")
     parser.add_argument("plot", help="plot (png)")
 
-    # Read arguments from command line
+    # read arguments from command line
     args = parser.parse_args()
 
-    # Run main with provided arguments
+    # run main with provided arguments
     main(args.input_file, args.plot)

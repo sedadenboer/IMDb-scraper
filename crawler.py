@@ -6,7 +6,7 @@
 #
 # Scrapes language info from individual movie websites and creates a new top5 CSV file including this info.
 # - Command line includes the input file name and output file name.
-# - Contains get_languages(input) which retrieves and adds language info to a df.
+# - Contains get_languages(input) which retrieves and adds language info to a dataframe.
 # - Saves result into a CSV file.
 
 from helpers import simple_get
@@ -20,7 +20,7 @@ def main(input_file_name, output_file_name):
     Gets movies dataframe including languages and converts it to a new CSV.
     """
     df_with_languages = get_languages(input_file_name)
-    df_with_languages.to_csv(output_file_name, index=False)
+    # df_with_languages.to_csv(output_file_name, index=False)
 
 
 def get_languages(input):
@@ -60,22 +60,22 @@ def get_languages(input):
             # if language container doesn't exist
             languages_list.append('Not available')
 
-    # add language list as column to df
+    # add language list in a new column to df
     df['languages'] = languages_list
 
     return df
 
 
 if __name__ == "__main__":
-    # Set-up parsing command line arguments
+    # set-up parsing command line arguments
     parser = argparse.ArgumentParser(description="generate top 5 movies with languages")
 
-    # Adding arguments
+    # adding arguments
     parser.add_argument("input_file", help="input file (csv)")
     parser.add_argument("output_file", help="output file (csv)")
 
-    # Read arguments from command line
+    # read arguments from command line
     args = parser.parse_args()
 
-    # Run main with provided arguments
+    # run main with provided arguments
     main(args.input_file, args.output_file)

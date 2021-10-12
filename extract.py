@@ -16,22 +16,23 @@ def main(N, input, output):
     """
     Reads movies.csv and generates a subset containing the top N movies for every year.
     """
+    # reads move CSV into df, sorts it, selects top N movies and creates a new CSV.
     df = pd.read_csv(input).sort_values(['year', 'rating', 'title'], ascending=(True, False, True))
     topn_df = df.groupby('year').head(N)
     topn_df.to_csv(output, index=False)
 
 
 if __name__ == "__main__":
-    # Set-up parsing command line arguments
+    # set-up parsing command line arguments
     parser = argparse.ArgumentParser(description="get top N movies from movies.csv")
 
-    # Adding arguments
+    # adding arguments
     parser.add_argument("-n", "--top_n", type=int, default=5, help="top N movies (default 5)")
     parser.add_argument("input_file", help="input file (csv)")
     parser.add_argument("output_file", help="output file (csv)")
 
-    # Read arguments from command line
+    # read arguments from command line
     args = parser.parse_args()
 
-    # Run main with provided arguments
+    # run main with provided arguments
     main(args.top_n, args.input_file, args.output_file)
